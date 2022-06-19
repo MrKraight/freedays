@@ -1,16 +1,14 @@
 import axios from 'axios'
 
-const url = 'http://localhost:5000/api/routes/'
+const routeUrl = 'http://localhost:5000/api/routes/';
+const trackUrl = 'http://localhost:5000/api/routes/tracks/'
 
 class RouteService {
 
     static getRoutes() {
-       // const res = axios.get(url)
-       // console.log(res)
-        //return res;
         return new Promise( (resolve, reject) => {
             try {
-                axios.get(url).then((data) => {resolve(data);})
+                axios.get(routeUrl).then((data) => {resolve(data);})
             }
             catch(err) {
                 reject(err);
@@ -20,8 +18,7 @@ class RouteService {
 
     static insertRoute(name, points) {
         try {
-            //console.log(name,points)
-            axios.post(url, {
+            axios.post(routeUrl, {
                 name,
                 points
             });
@@ -31,8 +28,34 @@ class RouteService {
         }
     }
 
+    static sendTrack(fomrVals){
+        return new Promise( (resolve, reject) => {
+            try {
+                axios.post(trackUrl, 
+                fomrVals,    {headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            }).then(data=> {resolve(data);});
+            }
+            catch(err) {
+                reject(err);
+            }
+        });
+    }
+
+    static getTrack(){
+        return new Promise( (resolve, reject) => {
+            try {
+                axios.get(trackUrl).then((data) => {resolve(data);})
+            }
+            catch(err) {
+                reject(err);
+            }
+        })
+    }
+
     static deleteRoute(id) {
-        return axios.delete(`${url}${id}`);
+        return axios.delete(`${routeUrl}${id}`);
     }
 
 }

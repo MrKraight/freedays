@@ -136,8 +136,8 @@
         </div>
     </div>
     <div v-if="page=='page2'" class="col-md-10 float-right nopadding text-light" style="border-right: 2px solid #2c3237;">
-        <div>
-          <YaMapComponentVue ref="childComponent" @hook:mounted="mapInitialized"></YaMapComponentVue>
+        <div class="container map-content">
+          <map-container ref="childComponent" @hook:mounted="mapInitialized" style="height:20vw; width:100%;"></map-container>
         </div>
         <div class="row">
           <div class="container col ml-4">
@@ -194,15 +194,16 @@
 </template>
 <script>
 import RouteService from '../RouteService';
-import YaMapComponentVue from './YaMapComponent.vue';
-//import MapContainer from './MapContainer.vue'
+import MapContainer from './MapContainer.vue'
+//import YaMapComponent from './YaMapComponent.vue';
 
   export default {
     name: 'RouteComponent',
     props: ['page'],
     components: {
      // MapContainer
-    YaMapComponentVue
+    MapContainer,
+        //YaMapComponent
     },
     data() {
       return {
@@ -229,18 +230,20 @@ import YaMapComponentVue from './YaMapComponent.vue';
     },
     methods: {
       change_route: function (index) {
-        if(index <= this.routes.length - 1)
+        if(index < this.routes.length)
         {
           this.points = this.routes[index].points;
           //var route_name = this.routes[index].name
-          this.parsed_points = this.points.map(function(el) { return [el.coordinateX * 1,el.coordinateY * 1,el.address]})
-          this.$refs.childComponent.changeRoute(this.routes[index].name);
-          this.$refs.childComponent.changeCords(this.parsed_points);
+          //this.parsed_points = this.points.map(function(el) { return [el.coordinateY * 1,el.coordinateX * 1]})
+          //this.$refs.childComponent.changeRoute(this.routes[index].name);
+          if(this.routes[index]!=null){ 
+            this.$refs.childComponent.changeCords(index);
+          }
         }
       },
       mapInitialized: function() {
-        if(this.routes[0]!=null) 
-          this.change_route(0);
+        this.$refs.childComponent.initRoutes(this.routes);
+        this.change_route(0);
       },
       createPost: function() {
         var table = document.getElementById("points_table");

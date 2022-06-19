@@ -68,6 +68,10 @@
             <label for="child-handle8" class="btn-dark btn-sm">
               Организационные итоги
             </label>
+            <input type="radio" v-on:change="swapPage" value="page3" class="collapse3" name="collapse3" id="child-handle9">
+            <label for="child-handle9" class="btn-dark btn-sm">
+              Трек маршрута
+            </label>
           </div>
         </section>
         <section class="accordion col">

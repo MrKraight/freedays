@@ -1,6 +1,9 @@
 <template>
   <div class="hello">
     <yandex-map 
+    :settings="{
+        apiKey: 'bc66e9c1-29d5-4f56-8cb5-16d1a40b52c5',
+    }"
     :coords="coordinates"
     :zoom="10" 
     map-type="hybrid"

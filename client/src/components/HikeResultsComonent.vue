@@ -50,12 +50,69 @@
 Планировать запасные варианты даже для перевалов, которые не являются определяющими для категории маршрута и особенно для перевалов по которым нет свежих описаний или их мало. Есть вероятность, что их категория сложности или их опасность изменилась, была недооценена или будет неприемлема для конкретной группы.</textarea>
         </div>
     </div>
+        <div class="container-fluid" v-if="page=='page3'">
+        <div class="form-group row">
+            <label class="ml-3 h4">Загрузить трек пройденного маршрута</label>
+            <div style="height:20vw; width:100%;">
+                <vl-map :load-tiles-while-animating="true" :load-tiles-while-interacting="true"
+                            data-projection="EPSG:4326">
+                    <vl-view :zoom.sync="zoom" :center.sync="center"></vl-view>
+
+                    <vl-layer-tile id="osm">
+                        <vl-source-osm></vl-source-osm>
+                    </vl-layer-tile>
+                    <vl-feature v-if="points">
+                        <vl-geom-line-string :coordinates="points"></vl-geom-line-string>
+                        <vl-style>
+                            <vl-style-stroke
+                            color="black"
+                            :width="3">
+                            </vl-style-stroke>
+                        </vl-style>
+                    </vl-feature>
+                </vl-map>
+            </div>
+            <div class="mt-4">
+                <input type="file" @change="uploadFile" ref="file" accept=".gpx">
+                <button @click="submitFile">Загрузить!</button>
+            </div>
+        </div>
+    </div>
 </div>
 </template>
 
 <script>
+import RouteService from '../RouteService';
 export default {
     props: ['page'],
     name: 'HikeResultsComponent',
+    components: {
+     // MapContainer
+        //YaMapComponent
+    },
+    data () {
+      return { 
+        zoom: 0,
+        center: [86.45, 50.08],
+        points: null,
+      }
+    },
+    methods: {
+      uploadFile() {
+        this.Images = this.$refs.file.files[0];
+      },
+      submitFile() {
+        var formData = new FormData();
+        formData.append('file', this.Images);
+        RouteService.sendTrack(formData).then((x) => {
+            //console.log("in component");
+            //console.log(x);
+          this.points = x.data;
+          this.zoom = 11;
+          this.center = x.data[0];
+        });
+      }
+    }
+
 }
 </script>
